@@ -1,0 +1,10 @@
+﻿{
+  "plugin_id": "chronicle.plugin.steam",
+  "name": "Steam",
+  "version": "1.0.0",
+  "author": "thegoddamnbeckster",
+  "description": "Chronicle metadata plugin for Steam.",
+  "entry_type": "Chronicle.Plugin.Steam.SteamPlugin",
+  "min_chronicle_version": "0.6.0",
+  "supported_media_types": ["game"]
+}
