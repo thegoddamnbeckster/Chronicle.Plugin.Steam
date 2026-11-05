@@ -66,7 +66,7 @@ public sealed class SteamMetadataProvider : IMetadataProvider
             var score = Score(term, title);
             list.Add(new ScoredCandidate(new MediaMetadata
             {
-                ExternalId = id.ToString(), Source = "steam", Title = title,
+                ExternalId = SteamMapper.ExternalId(id.ToString()), Source = "steam", Title = title,
                 PosterUrl = SteamMapper.PosterUrl(id.ToString()), SourceUrl = SteamMapper.StoreUrl(id.ToString()),
             }, score, score == 100 ? "exact title" : "similar title"));
         }

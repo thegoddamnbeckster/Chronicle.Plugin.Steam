@@ -242,7 +242,7 @@ public class MetadataProviderTests
         using var net = Elden(new Net().Configure(key: null, account: null));
         var m = await new SteamMetadataProvider().GetByIdAsync("steam:1245620");
         Assert.Equal("ELDEN RING", m.Title);
-        Assert.Equal("1245620", m.ExternalId);
+        Assert.Equal("steam:1245620", m.ExternalId);
         Assert.Equal("steam", m.Source);
     }
 

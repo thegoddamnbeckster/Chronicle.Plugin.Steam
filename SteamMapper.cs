@@ -15,7 +15,10 @@ internal static class SteamMapper
     public static string HeaderUrl(string appId) => $"{Cdn}/{appId}/header.jpg";
     public static string StoreUrl(string appId) => $"https://store.steampowered.com/app/{appId}/";
 
-    /// <summary>The id Chronicle stores under "steam": the app id with the platform prefix.</summary>
+    /// <summary>
+    /// The id Chronicle stores under the "steam" source, from either half of this plugin: the app id with the platform prefix ("steam:1245620").
+    /// One form everywhere. The import and the metadata half once disagreed (prefixed against bare), which made one game two items.
+    /// </summary>
     public static string ExternalId(string appId) => "steam:" + appId;
 
     public static int? YearOf(string? date)
@@ -60,7 +63,7 @@ internal static class SteamMapper
     {
         var m = new MediaMetadata
         {
-            ExternalId = appId,
+            ExternalId = ExternalId(appId),
             Source = "steam",
             Title = d.Str("name") ?? $"Steam app {appId}",
             Year = YearOf(d.Obj("release_date")?.Str("date")),

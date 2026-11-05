@@ -41,6 +41,17 @@ public class MapperTests
     }
 
     [Fact]
+    public void The_library_and_the_store_half_write_one_id_for_one_game_in_one_form()
+    {
+        // They used to disagree ("steam:1245620" from the import, "1245620" from the metadata half), which made one game two items.
+        var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
+        var fromStore = SteamMapper.Details("1245620", d, null).ExternalId;
+        var fromLibrary = SteamMapper.Owned(Fx.Parse("{\"appid\":1245620,\"name\":\"ELDEN RING\"}")).ExternalId;
+        Assert.Equal(fromStore, fromLibrary);
+        Assert.Equal("steam:1245620", fromLibrary);   // an id that comes from Steam starts with "steam:"
+    }
+
+    [Fact]
     public void Artwork_urls_are_steams_own_cdn_by_app_id()
     {
         var e = SteamMapper.Owned(Game(10));
