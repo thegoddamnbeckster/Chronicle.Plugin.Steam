@@ -18,7 +18,7 @@ Everything Steam sends is kept. Nothing is capped or filtered; the complete reco
    Steam lists a library only for a public profile; a private one answers with an empty list, and the plugin says so rather than
    reporting an empty library.
 3. In Chronicle, open Plugins, Steam, Settings. Paste the key and your Steam account. Open your profile in a browser: if its address is
-   `steamcommunity.com/profiles/` followed by 17 digits, enter those digits; if it is `steamcommunity.com/id/` followed by a name, enter that name.
+   `https://steamcommunity.com/profiles/76561198012345678` (an example), enter the number at the end; if it is `https://steamcommunity.com/id/yourname`, enter the name at the end. `https://steamcommunity.com/my/profile` takes you to your own profile when you are signed in.
    The name shown at the top of the profile is a display name and will not work. Save, then Test.
 4. Run **Import Everything from Steam** once. After that **Sync Steam Library** runs daily.
 

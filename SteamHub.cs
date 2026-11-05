@@ -27,14 +27,15 @@ internal sealed record Settings(string ApiKey, string SteamIdInput, string Langu
     }
 
     /// <summary>
-    /// What the owner pasted into the account box, as the 64-bit id when that is what it is: a bare 17-digit id or a /profiles/ address.
+    /// What the owner pasted into the account box, as the numeric Steam ID when that is what it is: a bare number or a /profiles/ address. No length is assumed.
     /// A vanity name (a bare word or an /id/ address) comes back as <c>Vanity</c> and is resolved through Steam.
     /// </summary>
     public (string? Id, string? Vanity) ParseAccount()
     {
         var t = SteamIdInput.Trim().TrimEnd('/');
-        if (Regex.IsMatch(t, "^7656119\\d{10}$")) return (t, null);
-        var m = Regex.Match(t, "steamcommunity\\.com/profiles/(7656119\\d{10})", RegexOptions.IgnoreCase);
+        // A numeric Steam ID is a long number; its length is not assumed. A custom address name can be all digits, but not this many.
+        if (Regex.IsMatch(t, "^\\d{15,25}$")) return (t, null);
+        var m = Regex.Match(t, "steamcommunity\\.com/profiles/(\\d{5,25})", RegexOptions.IgnoreCase);
         if (m.Success) return (m.Groups[1].Value, null);
         m = Regex.Match(t, "steamcommunity\\.com/id/([A-Za-z0-9_\\-]{2,64})", RegexOptions.IgnoreCase);
         if (m.Success) return (null, m.Groups[1].Value);

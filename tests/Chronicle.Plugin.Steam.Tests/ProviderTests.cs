@@ -105,7 +105,8 @@ public class ImportProviderTests
         var ex = await Assert.ThrowsAsync<PluginAuthException>(() => new SteamImportProvider().GetLibraryAsync());
         Assert.Contains("thegoddamnbeckster", ex.Message);
         Assert.Contains("/profiles/", ex.Message);
-        Assert.Contains("17 digits", ex.Message);
+        Assert.Contains("76561198012345678", ex.Message);
+        Assert.DoesNotContain("17 digits", ex.Message);
         Assert.Equal(0, net.Count("GetOwnedGames"));
     }
 
@@ -179,7 +180,8 @@ public class ImportProviderTests
     {
         var all = new SteamImportProvider().GetSettingsSchema().Settings;
         var field = all.Single(s => s.Key == "steam_id");
-        Assert.Contains("17 digits", field.Label);
+        Assert.DoesNotContain("17", field.Label);
+        Assert.Contains("number in your profile address", field.Label);
         Assert.Contains("NOT your name", field.Label);
 
         // the callout sits directly above the box it explains
@@ -188,6 +190,9 @@ public class ImportProviderTests
         Assert.Contains("NUMBER, not your name", notice.Label);
         Assert.Contains("/profiles/", notice.Description);
         Assert.Contains("ADDRESS BAR", notice.Description);
+        Assert.Contains("https://steamcommunity.com/profiles/76561198012345678", notice.Description);
+        Assert.Contains("https://steamcommunity.com/my/profile", notice.Description);
+        Assert.DoesNotContain("17 digits", notice.Description);
         Assert.Contains("DO NOT type the name shown at the top of your profile", notice.Description);
         Assert.Contains("/id/", notice.Description);
     }

@@ -75,9 +75,9 @@ public sealed class SteamImportProvider : IImportProvider
     {
         var (_, vanity) = SteamHub.Current.ParseAccount();
         return vanity is null
-            ? "That is not a Steam account Steam can find. Enter your 17-digit Steam ID, or your profile address."
+            ? "That is not a Steam account Steam can find. Enter the number from your profile address (steamcommunity.com/profiles/ followed by a number), or paste the whole address."
             : $"Steam has no profile with the custom address name '{vanity}'. The name shown on a profile is not the same as its custom address name. " +
-              "Open your profile in a browser: if the address ends in /profiles/ and 17 digits, enter those 17 digits here; if it ends in /id/ and a name, enter that name.";
+              "Open your profile in a browser: if the address is like https://steamcommunity.com/profiles/76561198012345678, enter the number at the end (here 76561198012345678); if it is like https://steamcommunity.com/id/yourname, enter that name.";
     }
 
     private static async Task EnsureVisibleAsync(string steamId, CancellationToken ct)

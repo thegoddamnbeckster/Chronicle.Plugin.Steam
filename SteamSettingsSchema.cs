@@ -24,17 +24,20 @@ internal static class SteamSettingsSchema
             new SettingDefinition
             {
                 Key = "notice_id", Label = "Step 2 of 3: find your Steam ID. It is a NUMBER, not your name.", Type = SettingType.Notice,
-                Description = "Your Steam ID is a number with 17 digits, like 76561198012345678.\n" +
-                              "1. In a web browser go to https://steamcommunity.com and sign in.\n" +
-                              "2. Click your name at the top, then Profile.\n" +
-                              "3. Look at the ADDRESS BAR. It reads steamcommunity.com/profiles/ followed by 17 digits, for example\n" +
-                              "    steamcommunity.com/profiles/76561198012345678\n" +
-                              "4. Copy those 17 digits into the box below. Pasting the whole address works too.\n" +
-                              "If the address reads steamcommunity.com/id/ followed by a word instead, type that word.\n" +
+                Description = "Your Steam ID is a long number, like 76561198012345678. It is in the address of your Steam profile.\n" +
+                              "1. In a web browser, signed in to Steam, open https://steamcommunity.com/my/profile (it jumps to your own profile).\n" +
+                              "    Or go to https://steamcommunity.com, click your name at the top, then Profile.\n" +
+                              "2. Look at the ADDRESS BAR of the browser (the Steam app has none: use a browser).\n" +
+                              "3. The address looks like this (an example, not yours):\n" +
+                              "    https://steamcommunity.com/profiles/76561198012345678\n" +
+                              "    Copy the number at the end, here 76561198012345678, into the box below. Pasting the whole address works too.\n" +
+                              "4. If your address looks like this instead:\n" +
+                              "    https://steamcommunity.com/id/yourname\n" +
+                              "    type the word at the end, here yourname.\n" +
                               "DO NOT type the name shown at the top of your profile (your display name). Steam cannot look that up, and the import will fail.",
             },
-            new SettingDefinition { Key = Settings.KeySteamId, Label = "Steam ID (17 digits, NOT your name)", Type = SettingType.Text, Required = true,
-                Description = "Example: 76561198012345678. Or the whole profile address." },
+            new SettingDefinition { Key = Settings.KeySteamId, Label = "Steam ID (the number in your profile address, NOT your name)", Type = SettingType.Text, Required = true,
+                Description = "Example: 76561198012345678, from https://steamcommunity.com/profiles/76561198012345678. Or paste the whole address." },
 
             new SettingDefinition
             {

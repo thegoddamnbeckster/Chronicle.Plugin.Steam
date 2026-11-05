@@ -10,10 +10,13 @@ public class SettingsTests
 
     [Theory]
     [InlineData("76561198000000000", "76561198000000000", null)]
+    [InlineData("7656119800000000099", "7656119800000000099", null)]   // a different length is still an id
+    [InlineData("https://steamcommunity.com/profiles/765611980000000", "765611980000000", null)]
     [InlineData("https://steamcommunity.com/profiles/76561198000000000/", "76561198000000000", null)]
     [InlineData("steamcommunity.com/profiles/76561198000000000", "76561198000000000", null)]
     [InlineData("https://steamcommunity.com/id/some_name/", null, "some_name")]
     [InlineData("some_name", null, "some_name")]
+    [InlineData("12345", null, "12345")]   // a short number is a custom address name, not an id
     [InlineData("  some-name  ", null, "some-name")]
     public void The_account_box_takes_an_id_an_address_or_a_name(string typed, string? id, string? vanity)
     {
