@@ -1,0 +1,29 @@
+{
+ "response": {
+  "total_count": 3,
+  "games": [
+   {
+    "appid": 553850,
+    "name": "HELLDIVERS™ 2",
+    "playtime_2weeks": 262,
+    "playtime_forever": 38222,
+    "img_icon_url": "5236dcc5d02b1f7aa199eef56253d20be87baef3",
+    "playtime_windows_forever": 38122,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 100,
+    "playtime_deck_forever": 0
+   },
+   {
+    "appid": 1794680,
+    "name": "Vampire Survivors",
+    "playtime_2weeks": 45,
+    "playtime_forever": 811,
+    "img_icon_url": "3677cf1be3be1f4ea42261c62ce10519715ade58",
+    "playtime_windows_forever": 75,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 736,
+    "playtime_deck_forever": 736
+   }
+  ]
+ }
+}

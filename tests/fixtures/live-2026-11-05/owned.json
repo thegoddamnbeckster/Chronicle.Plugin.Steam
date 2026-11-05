@@ -1,0 +1,105 @@
+{
+ "response": {
+  "game_count": 5,
+  "games": [
+   {
+    "appid": 10,
+    "name": "Counter-Strike",
+    "playtime_forever": 0,
+    "img_icon_url": "6b0312cda02f5f777efa2f3318c307ff9acafbb5",
+    "playtime_windows_forever": 0,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 0,
+    "playtime_deck_forever": 0,
+    "rtime_last_played": 0,
+    "capsule_filename": "library_600x900.jpg",
+    "has_workshop": false,
+    "has_market": false,
+    "has_dlc": false,
+    "content_descriptorids": [
+     2,
+     5
+    ],
+    "playtime_disconnected": 0
+   },
+   {
+    "appid": 553850,
+    "name": "HELLDIVERS™ 2",
+    "playtime_2weeks": 262,
+    "playtime_forever": 38222,
+    "img_icon_url": "5236dcc5d02b1f7aa199eef56253d20be87baef3",
+    "has_community_visible_stats": true,
+    "playtime_windows_forever": 38122,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 100,
+    "playtime_deck_forever": 0,
+    "rtime_last_played": 1793847620,
+    "capsule_filename": "a79b4d13ce2b1e1379116085b4f97b45c14548ab/library_capsule.jpg",
+    "has_workshop": false,
+    "has_market": false,
+    "has_dlc": true,
+    "content_descriptorids": [
+     2,
+     5
+    ],
+    "playtime_disconnected": 0
+   },
+   {
+    "appid": 400,
+    "name": "Portal",
+    "playtime_forever": 5,
+    "img_icon_url": "cfa928ab4119dd137e50d728e8fe703e4e970aff",
+    "has_community_visible_stats": true,
+    "playtime_windows_forever": 5,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 0,
+    "playtime_deck_forever": 0,
+    "rtime_last_played": 1682212512,
+    "capsule_filename": "library_600x900.jpg",
+    "has_workshop": false,
+    "has_market": false,
+    "has_dlc": true,
+    "playtime_disconnected": 0
+   },
+   {
+    "appid": 1250,
+    "name": "Killing Floor",
+    "playtime_forever": 10,
+    "img_icon_url": "d8a2d777cb4c59cf06aa244166db232336520547",
+    "has_community_visible_stats": true,
+    "playtime_windows_forever": 10,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 0,
+    "playtime_deck_forever": 0,
+    "rtime_last_played": 1649550121,
+    "capsule_filename": "library_600x900.jpg",
+    "has_workshop": true,
+    "has_market": false,
+    "has_dlc": true,
+    "content_descriptorids": [
+     2,
+     5
+    ],
+    "playtime_disconnected": 0
+   },
+   {
+    "appid": 310560,
+    "name": "DiRT Rally",
+    "playtime_2weeks": 11,
+    "playtime_forever": 12,
+    "img_icon_url": "6af1249ba4f9c521ce981ee040ffa3b9ca603911",
+    "has_community_visible_stats": true,
+    "playtime_windows_forever": 0,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 11,
+    "playtime_deck_forever": 11,
+    "rtime_last_played": 1793237707,
+    "capsule_filename": "library_600x900.jpg",
+    "has_workshop": true,
+    "has_market": false,
+    "has_dlc": true,
+    "playtime_disconnected": 0
+   }
+  ]
+ }
+}

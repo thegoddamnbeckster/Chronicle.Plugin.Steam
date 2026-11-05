@@ -1,0 +1,31 @@
+{
+ "response": {
+  "badges": [
+   {
+    "badgeid": 13,
+    "level": 315,
+    "completion_time": 1788809498,
+    "xp": 565,
+    "scarcity": 4027455
+   },
+   {
+    "badgeid": 2,
+    "level": 2,
+    "completion_time": 1751250295,
+    "xp": 200,
+    "scarcity": 29806005
+   },
+   {
+    "badgeid": 68,
+    "level": 1,
+    "completion_time": 1734553171,
+    "xp": 50,
+    "scarcity": 37389536
+   }
+  ],
+  "player_xp": 1645,
+  "player_level": 13,
+  "player_xp_needed_to_level_up": 155,
+  "player_xp_needed_current_level": 1600
+ }
+}

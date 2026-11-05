@@ -1,10 +1,42 @@
-﻿{
-  "plugin_id": "chronicle.plugin.steam",
-  "name": "Steam",
-  "version": "1.0.0",
-  "author": "thegoddamnbeckster",
-  "description": "Chronicle metadata plugin for Steam.",
-  "entry_type": "Chronicle.Plugin.Steam.SteamPlugin",
-  "min_chronicle_version": "0.6.0",
-  "supported_media_types": ["game"]
+{
+  "plugin_id":   "chronicle.plugin.steam",
+  "name":        "Steam",
+  "version":     "1.0.0",
+  "author":      "Chronicle Contributors",
+  "description": "Your Steam library in Chronicle: every game and app you own with hours played and last played, your wishlist, level and badges, plus Steam store metadata (description, genres, categories, developers, publishers, screenshots, trailers, requirements, DLC, ratings) and your achievements for each game. Everything Steam has is kept. Needs a free Steam Web API key and a public profile; works on its own, with no other plugin installed.",
+  "min_chronicle_version": "0.7.0",
+  "entry_type":  "Chronicle.Plugin.Steam.SteamMetadataProvider",
+  "iconUrl":     "https://store.steampowered.com/favicon.ico",
+  "brandColorLight": "#1B2838",
+  "brandColorDark":  "#66C0F4",
+  "fixMatchHint": "Paste a store.steampowered.com game page address, or steam: followed by a Steam app id (steam:1245620).",
+  "supported_media_types": ["game"],
+  "background_tasks": [
+    {
+      "task_id":         "delta-sync",
+      "display_name":    "Sync Steam Library",
+      "description":     "Imports your Steam library, wishlist, level and badges. Games you already have are updated in place (hours played, last played); games you removed from Chronicle stay removed.",
+      "default_cron":    "30 4 * * *",
+      "default_enabled": true,
+      "schedulable":     true
+    },
+    {
+      "task_id":         "import-all",
+      "display_name":    "Import Everything from Steam",
+      "description":     "A full import of your Steam library and wishlist now.",
+      "default_cron":    "",
+      "default_enabled": false,
+      "schedulable":     false,
+      "run_confirmation_title": "Import your Steam library?",
+      "run_confirmation_message": "This adds every game and app you own to Chronicle. Games already there are not duplicated."
+    },
+    {
+      "task_id":         "fetch-missing-metadata",
+      "display_name":    "Fetch Missing Steam Metadata",
+      "description":     "Looks up store details and your achievements for games that Steam has not enriched yet. Paced under the store's request limit, so a large library takes a while the first time.",
+      "default_cron":    "15 5 * * *",
+      "default_enabled": true
+    }
+  ],
+  "settings": []
 }

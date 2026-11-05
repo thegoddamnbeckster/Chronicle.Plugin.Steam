@@ -1,0 +1,13 @@
+{
+ "response": {
+  "players": [
+   {
+    "steamid": "76561198000000000",
+    "communityvisibilitystate": 3,
+    "profilestate": 1,
+    "personaname": "TestPlayer",
+    "profileurl": "https://steamcommunity.com/profiles/76561198000000000/"
+   }
+  ]
+ }
+}

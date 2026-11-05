@@ -1,0 +1,275 @@
+{
+ "playerstats": {
+  "steamID": "76561198000000000",
+  "gameName": "HELLDIVERS™ 2",
+  "achievements": [
+   {
+    "apiname": "1",
+    "achieved": 1,
+    "unlocktime": 1728162622,
+    "name": "Hell Dive",
+    "description": "Complete an Extreme difficulty mission or higher without anyone dying."
+   },
+   {
+    "apiname": "2",
+    "achieved": 1,
+    "unlocktime": 1729304526,
+    "name": "Hold my primary, I'm going in!",
+    "description": "Complete a full Hard difficulty mission or higher without anyone firing their primary or support weapon."
+   },
+   {
+    "apiname": "3",
+    "achieved": 1,
+    "unlocktime": 1729303835,
+    "name": "Gone in 360 seconds!",
+    "description": "Complete a full Extreme difficulty Blitz mission and extract in under 6 minutes."
+   },
+   {
+    "apiname": "4",
+    "achieved": 1,
+    "unlocktime": 1714270159,
+    "name": "Extractamundo!",
+    "description": ""
+   },
+   {
+    "apiname": "5",
+    "achieved": 1,
+    "unlocktime": 1729307485,
+    "name": "Caught them by Supplies!",
+    "description": "Kill a Charger with a resupply pod."
+   },
+   {
+    "apiname": "6",
+    "achieved": 1,
+    "unlocktime": 1714276840,
+    "name": "Samples are a diver's best friend",
+    "description": "Extract at least 15 rare samples from a mission as a team."
+   },
+   {
+    "apiname": "7",
+    "achieved": 1,
+    "unlocktime": 1715920561,
+    "name": "Doing your part",
+    "description": "Complete at least 100 missions."
+   },
+   {
+    "apiname": "8",
+    "achieved": 1,
+    "unlocktime": 1729301839,
+    "name": "It's the only way to be sure...",
+    "description": "Have 6 orbital barrage stratagems in the same place at the same time."
+   },
+   {
+    "apiname": "9",
+    "achieved": 1,
+    "unlocktime": 1714269624,
+    "name": "For the greater good!",
+    "description": "Kill 5,000 enemies."
+   },
+   {
+    "apiname": "10",
+    "achieved": 1,
+    "unlocktime": 1711860942,
+    "name": "Kill it with fire!",
+    "description": "Kill 100 enemies using fire damage during the same mission."
+   },
+   {
+    "apiname": "11",
+    "achieved": 1,
+    "unlocktime": 1713670841,
+    "name": "Get some!",
+    "description": "Fire at least 150 rounds in one burst, killing at least 10 enemies."
+   },
+   {
+    "apiname": "12",
+    "achieved": 1,
+    "unlocktime": 1729306831,
+    "name": "That which does not kill you...",
+    "description": "Be injured in all limbs at the same time."
+   },
+   {
+    "apiname": "13",
+    "achieved": 1,
+    "unlocktime": 1712459788,
+    "name": "The power of Democracy",
+    "description": "Kill 25 enemies with one stratagem."
+   },
+   {
+    "apiname": "14",
+    "achieved": 1,
+    "unlocktime": 1725139944,
+    "name": "Fully operational",
+    "description": "Reach max level on one ship module."
+   },
+   {
+    "apiname": "15",
+    "achieved": 1,
+    "unlocktime": 1714790941,
+    "name": "Ship it!",
+    "description": "Upgrade all ship modules at least 1 level."
+   },
+   {
+    "apiname": "16",
+    "achieved": 1,
+    "unlocktime": 1712360053,
+    "name": "Nothing is bigger than Freedom",
+    "description": "Defeat a Hulk."
+   },
+   {
+    "apiname": "17",
+    "achieved": 1,
+    "unlocktime": 1714858168,
+    "name": "The taller they are...",
+    "description": "Defeat a Bile Titan."
+   },
+   {
+    "apiname": "18",
+    "achieved": 1,
+    "unlocktime": 1713310126,
+    "name": "They don't call it Tacticool for nothin'",
+    "description": "Complete 10 tactical objectives."
+   },
+   {
+    "apiname": "19",
+    "achieved": 1,
+    "unlocktime": 1728175226,
+    "name": "Let's call it a draw",
+    "description": "Shoot off both arms on a Hulk and then extract while it's alive."
+   },
+   {
+    "apiname": "20",
+    "achieved": 1,
+    "unlocktime": 1712461451,
+    "name": "Cool guys don't loo- AAAAH!",
+    "description": "Fly at least 25 meters from the shockwave of an explosion."
+   },
+   {
+    "apiname": "21",
+    "achieved": 1,
+    "unlocktime": 1722110378,
+    "name": "Hot Potato!",
+    "description": "Throw back a live grenade."
+   },
+   {
+    "apiname": "22",
+    "achieved": 1,
+    "unlocktime": 1711768282,
+    "name": "Bot Scrapper",
+    "description": "Play 1 Bot Mission."
+   },
+   {
+    "apiname": "23",
+    "achieved": 1,
+    "unlocktime": 1710642513,
+    "name": "Bug Stomper",
+    "description": "Play 1 Bug Mission."
+   },
+   {
+    "apiname": "24",
+    "achieved": 1,
+    "unlocktime": 1711762466,
+    "name": "Extractinating the Countryside",
+    "description": "Play a planet defense mission."
+   },
+   {
+    "apiname": "25",
+    "achieved": 1,
+    "unlocktime": 1714249887,
+    "name": "Patriot",
+    "description": "Play at least 50 missions."
+   },
+   {
+    "apiname": "26",
+    "achieved": 1,
+    "unlocktime": 1729307696,
+    "name": "Hold My Liber-tea!",
+    "description": "While using a jump pack, knock yourself into a ragdoll state."
+   },
+   {
+    "apiname": "27",
+    "achieved": 1,
+    "unlocktime": 1711859497,
+    "name": "Eat This!",
+    "description": "Kill a bug warrior with a shotgun within 1 meter."
+   },
+   {
+    "apiname": "28",
+    "achieved": 1,
+    "unlocktime": 1715719890,
+    "name": "Democracy ain't done with you yet",
+    "description": "Heal another player using stims."
+   },
+   {
+    "apiname": "29",
+    "achieved": 1,
+    "unlocktime": 1717022189,
+    "name": "Promote Synergy",
+    "description": "Provide assisted reload for a teammate."
+   },
+   {
+    "apiname": "30",
+    "achieved": 1,
+    "unlocktime": 1711768282,
+    "name": "Strapping young lad",
+    "description": "Customize your Helldiver with new cape, armor, and helmet."
+   },
+   {
+    "apiname": "31",
+    "achieved": 1,
+    "unlocktime": 1714276840,
+    "name": "In the nick of time",
+    "description": "Extract after the timer reaches zero."
+   },
+   {
+    "apiname": "32",
+    "achieved": 1,
+    "unlocktime": 1710537205,
+    "name": "The Real Deal",
+    "description": "Complete Basic Training."
+   },
+   {
+    "apiname": "33",
+    "achieved": 1,
+    "unlocktime": 1711763655,
+    "name": "The long arm of Justice",
+    "description": "Kill a target at a distance of over 100m."
+   },
+   {
+    "apiname": "34",
+    "achieved": 1,
+    "unlocktime": 1714248322,
+    "name": "Stalking is illegal",
+    "description": ""
+   },
+   {
+    "apiname": "35",
+    "achieved": 1,
+    "unlocktime": 1712356948,
+    "name": "Job's done!",
+    "description": ""
+   },
+   {
+    "apiname": "36",
+    "achieved": 1,
+    "unlocktime": 1715978273,
+    "name": "Science is done by quantity",
+    "description": "Extract with at least 15 common samples."
+   },
+   {
+    "apiname": "37",
+    "achieved": 1,
+    "unlocktime": 1710644068,
+    "name": "They mostly come at night...",
+    "description": "Extract from a mission during nighttime."
+   },
+   {
+    "apiname": "38",
+    "achieved": 1,
+    "unlocktime": 1711764372,
+    "name": "Spread Managed Democracy",
+    "description": "Kill 150 enemies during the same mission."
+   }
+  ],
+  "success": true
+ }
+}

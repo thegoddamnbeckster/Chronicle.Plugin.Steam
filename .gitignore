@@ -1,4 +1,6 @@
-obj/
 bin/
+obj/
 *.user
-.vs/
+tests/**/bin/
+tests/**/obj/
+TestResults/
