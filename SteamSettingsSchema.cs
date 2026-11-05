@@ -19,7 +19,7 @@ internal static class SteamSettingsSchema
             new SettingDefinition { Key = Settings.KeyApiKey, Label = "Steam Web API key", Type = SettingType.Password, Required = true,
                 Description = "The 32-character key from steamcommunity.com/dev/apikey." },
             new SettingDefinition { Key = Settings.KeySteamId, Label = "Steam account", Type = SettingType.Text, Required = true,
-                Description = "Your 17-digit Steam ID, your profile address (steamcommunity.com/profiles/... or /id/...) or your custom profile name." },
+                Description = "Open your Steam profile in a browser. If the address is steamcommunity.com/profiles/ followed by 17 digits, enter those 17 digits (or the whole address). If it is steamcommunity.com/id/ followed by a name, enter that name. The name shown at the top of the profile is not the same thing and will not work." },
             new SettingDefinition { Key = Settings.KeyLanguage, Label = "Language", Type = SettingType.Text, DefaultValue = "english",
                 Description = "The language for store text and achievement names, as Steam names it (english, french, german, ...)." },
             new SettingDefinition { Key = Settings.KeyCountry, Label = "Store country", Type = SettingType.Text, DefaultValue = "us",

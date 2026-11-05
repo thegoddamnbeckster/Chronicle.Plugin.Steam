@@ -17,8 +17,9 @@ Everything Steam sends is kept. Nothing is capped or filtered; the complete reco
 2. In Steam, open Edit Profile, then Privacy Settings, and set **Game details** to **Public** (at least while Chronicle imports).
    Steam lists a library only for a public profile; a private one answers with an empty list, and the plugin says so rather than
    reporting an empty library.
-3. In Chronicle, open Plugins, Steam, Settings. Paste the key and your Steam account (your 17-digit Steam ID, your profile
-   address, or your custom profile name). Save, then Test.
+3. In Chronicle, open Plugins, Steam, Settings. Paste the key and your Steam account. Open your profile in a browser: if its address is
+   `steamcommunity.com/profiles/` followed by 17 digits, enter those digits; if it is `steamcommunity.com/id/` followed by a name, enter that name.
+   The name shown at the top of the profile is a display name and will not work. Save, then Test.
 4. Run **Import Everything from Steam** once. After that **Sync Steam Library** runs daily.
 
 The key is saved encrypted, never logged, and sent only to Steam.

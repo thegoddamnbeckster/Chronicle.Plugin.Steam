@@ -44,8 +44,7 @@ public sealed class SteamImportProvider : IImportProvider
 
     public async Task<List<ImportedLibraryEntry>> GetLibraryAsync(CancellationToken ct = default)
     {
-        var steamId = await SteamApi.ResolveAccountAsync(ct) ?? throw Fail.Auth(
-            "That is not a Steam account Steam can find. Enter your 17-digit Steam ID, your profile address or your profile name.");
+        var steamId = await SteamApi.ResolveAccountAsync(ct) ?? throw Fail.Auth(AccountNotFound());
         await EnsureVisibleAsync(steamId, ct);
 
         var owned = await SteamApi.OwnedGamesAsync(steamId, ct);
@@ -66,6 +65,19 @@ public sealed class SteamImportProvider : IImportProvider
 
         entries.AddRange(await WishlistAsync(steamId, ownedIds, ct));
         return entries;
+    }
+
+    /// <summary>
+    /// Says what to type instead. The commonest slip is the name shown on the profile (the display name, which is also what other sites
+    /// call the account), which is not the custom address name Steam can look up; it resolves to nothing.
+    /// </summary>
+    internal static string AccountNotFound()
+    {
+        var (_, vanity) = SteamHub.Current.ParseAccount();
+        return vanity is null
+            ? "That is not a Steam account Steam can find. Enter your 17-digit Steam ID, or your profile address."
+            : $"Steam has no profile with the custom address name '{vanity}'. The name shown on a profile is not the same as its custom address name. " +
+              "Open your profile in a browser: if the address ends in /profiles/ and 17 digits, enter those 17 digits here; if it ends in /id/ and a name, enter that name.";
     }
 
     private static async Task EnsureVisibleAsync(string steamId, CancellationToken ct)

@@ -98,6 +98,18 @@ public class ImportProviderTests
     }
 
     [Fact]
+    public async Task A_display_name_is_explained_not_just_refused()
+    {
+        // The owner typed the name shown on their profile. It is not a custom address, so Steam has nothing under it.
+        using var net = new Net().Configure(account: "thegoddamnbeckster").On("ResolveVanityURL", "{\"response\":{\"success\":42,\"message\":\"No match\"}}");
+        var ex = await Assert.ThrowsAsync<PluginAuthException>(() => new SteamImportProvider().GetLibraryAsync());
+        Assert.Contains("thegoddamnbeckster", ex.Message);
+        Assert.Contains("/profiles/", ex.Message);
+        Assert.Contains("17 digits", ex.Message);
+        Assert.Equal(0, net.Count("GetOwnedGames"));
+    }
+
+    [Fact]
     public async Task Account_facts_level_badges_recent_play_come_back_whole()
     {
         using var net = new Net().Configure().OnFixture("GetPlayerSummaries", "summary.json").OnFixture("GetSteamLevel", "level.json")

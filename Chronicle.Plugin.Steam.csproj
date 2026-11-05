@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Chronicle.Plugin.Steam</AssemblyName>
     <RootNamespace>Chronicle.Plugin.Steam</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Chronicle Contributors</Authors>
     <Description>Steam plugin for Chronicle: imports your whole Steam library (owned games, playtime, wishlist, level, badges) and fetches Steam store metadata and achievements. Needs a free Steam Web API key.</Description>
   </PropertyGroup>
