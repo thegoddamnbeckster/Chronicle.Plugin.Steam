@@ -1,7 +1,7 @@
 {
   "plugin_id":   "chronicle.plugin.steam",
   "name":        "Steam",
-  "version":     "1.0.4",
+  "version":     "1.0.5",
   "author":      "Chronicle Contributors",
   "description": "Your Steam library in Chronicle: every game and app you own with hours played and last played, your wishlist, level and badges, plus Steam store metadata (description, genres, categories, developers, publishers, screenshots, trailers, requirements, DLC, ratings) and your achievements for each game. Everything Steam has is kept. Needs a free Steam Web API key and a public profile; works on its own, with no other plugin installed.",
   "min_chronicle_version": "0.7.0",

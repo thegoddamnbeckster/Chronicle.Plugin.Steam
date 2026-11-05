@@ -110,6 +110,9 @@ public sealed class SteamImportProvider : IImportProvider
             {
                 var d = await SteamApi.AppDetailsAsync(id.ToString(), ct);
                 if (d is null) continue;   // delisted: nothing names it, so it waits rather than being invented
+                // Steam's store also lists its own hardware (Steam Deck, Steam Machine) on a wishlist. That is not a game and does not belong in
+                // the Video Games library, so it is left out. This is the one thing the import skips by kind; DLC, demos and soundtracks are kept.
+                if (string.Equals(d.Value.Str("type"), "hardware", StringComparison.OrdinalIgnoreCase)) continue;
                 list.Add(SteamMapper.Wishlisted(item, d.Value));
             }
             catch (HttpRequestException) { break; }

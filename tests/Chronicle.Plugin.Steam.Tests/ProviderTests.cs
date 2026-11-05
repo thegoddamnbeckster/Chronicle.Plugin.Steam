@@ -33,6 +33,26 @@ public class ImportProviderTests
     }
 
     [Fact]
+    public async Task Steam_hardware_on_the_wishlist_is_not_a_game_and_is_left_out_but_add_ons_are_kept()
+    {
+        using var net = Library(new Net().Configure());
+        var ids = Fx.Json("wishlist.json").GetProperty("response").GetProperty("items").EnumerateArray().Select(i => i.GetProperty("appid").GetInt32()).ToList();
+        net.On("GetWishlist", $"{{\"response\":{{\"items\":[{{\"appid\":{ids[0]},\"priority\":0,\"date_added\":1700000000}},{{\"appid\":{ids[1]},\"priority\":0,\"date_added\":1700000001}},{{\"appid\":{ids[2]},\"priority\":0,\"date_added\":1700000002}}]}}}}");
+        net.On("appdetails", url =>
+        {
+            var type = url.Contains($"appids={ids[0]}&") ? "hardware" : url.Contains($"appids={ids[1]}&") ? "dlc" : "game";
+            var id = url.Contains($"appids={ids[0]}&") ? ids[0] : url.Contains($"appids={ids[1]}&") ? ids[1] : ids[2];
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent($"{{\"{id}\":{{\"success\":true,\"data\":{{\"name\":\"N{id}\",\"type\":\"{type}\"}}}}}}") };
+        });
+
+        var wish = (await new SteamImportProvider().GetLibraryAsync()).Where(e => e.IsWishlist).ToList();
+
+        Assert.Equal(2, wish.Count);
+        Assert.DoesNotContain(wish, e => e.ExternalId == $"steam:{ids[0]}");
+        Assert.Contains(wish, e => e.Tags is not null && e.Tags.Contains("dlc"));
+    }
+
+    [Fact]
     public async Task A_wishlisted_game_that_is_already_owned_is_not_listed_twice()
     {
         using var net = Library(new Net().Configure());
@@ -316,6 +336,56 @@ public class MetadataProviderTests
         Assert.NotEmpty(found);
         Assert.Equal(found.Max(c => c.Score), found[0].Score);
         Assert.Contains("ELDEN", found[0].Metadata.Title, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string StoreSearch(params (int Id, string Name)[] items) =>
+        "{\"total\":" + items.Length + ",\"items\":[" + string.Join(",", items.Select(i => $"{{\"type\":\"app\",\"name\":\"{i.Name}\",\"id\":{i.Id}}}")) + "]}";
+
+    private static string Details(int id, string name, string year) =>
+        $"{{\"{id}\":{{\"success\":true,\"data\":{{\"name\":\"{name}\",\"type\":\"game\",\"release_date\":{{\"date\":\"{year}\"}}}}}}}}";
+
+    [Fact]
+    public async Task An_automatic_match_accepts_only_the_exact_title_never_one_that_merely_contains_it()
+    {
+        // Chronicle filling in an item the user already has: "Command & Conquer" must not become "Command & Conquer 3", nor Duke Nukem Duke Nukem 3D.
+        using var net = new Net().Configure().On("storesearch", StoreSearch((24790, "Command & Conquer 3 Tiberium Wars"), (2229850, "Command & Conquer Red Alert 2 and Yuri's Revenge")));
+        var ctx = new MediaSearchContext("Command & Conquer", MediaTypeName: "game", IsRealHierarchyPosition: true);
+
+        Assert.Empty(await new SteamMetadataProvider().SearchAsync(ctx));
+    }
+
+    [Fact]
+    public async Task An_automatic_match_takes_the_exact_title_when_it_is_there_ignoring_trademarks_and_punctuation()
+    {
+        using var net = new Net().Configure().On("storesearch", StoreSearch((24790, "Command & Conquer 3 Tiberium Wars"), (2229850, "Command & Conquer™")));
+        var ctx = new MediaSearchContext("Command & Conquer", MediaTypeName: "game", IsRealHierarchyPosition: true);
+
+        var found = await new SteamMetadataProvider().SearchAsync(ctx);
+        Assert.Single(found);
+        Assert.Equal("steam:2229850", found[0].Metadata.ExternalId);
+    }
+
+    [Fact]
+    public async Task An_automatic_match_with_a_known_year_drops_a_same_titled_game_from_another_year()
+    {
+        using var net = new Net().Configure().On("storesearch", StoreSearch((221, "Prey"), (480490, "Prey")))
+            .On("appids=221&", Details(221, "Prey", "Jul 11, 2006")).On("appids=480490&", Details(480490, "Prey", "May 5, 2017"));
+        var ctx = new MediaSearchContext("Prey", Year: 2017, MediaTypeName: "game", IsRealHierarchyPosition: true);
+
+        var found = await new SteamMetadataProvider().SearchAsync(ctx);
+        var one = Assert.Single(found);
+        Assert.Equal("steam:480490", one.Metadata.ExternalId);
+        Assert.Equal(2017, one.Metadata.Year);
+    }
+
+    [Fact]
+    public async Task A_person_searching_in_Add_Media_still_sees_the_similar_titles_to_choose_from()
+    {
+        using var net = new Net().Configure().On("storesearch", StoreSearch((24790, "Command & Conquer 3 Tiberium Wars"), (1, "Command & Conquer")));
+        var found = await new SteamMetadataProvider().SearchAsync(new MediaSearchContext("Command & Conquer", MediaTypeName: "game"));
+
+        Assert.Equal(2, found.Count);
+        Assert.Equal("steam:1", found[0].Metadata.ExternalId);   // the exact title first
     }
 
     [Fact]

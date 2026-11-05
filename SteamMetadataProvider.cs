@@ -58,17 +58,35 @@ public sealed class SteamMetadataProvider : IMetadataProvider
         var term = (context.Name ?? "").Trim();
         if (term.Length == 0) return [];
         var found = await SteamApi.StoreSearchAsync(term, ct);
+        // A person typing into Add Media sees every candidate and chooses. An automatic match (Chronicle filling in an item the user already has)
+        // must be right or absent: a title that merely starts with or contains the wanted one is a different game (Command & Conquer is not
+        // Command & Conquer 3), and a wrong match is worse than none because its title and poster replace the user's.
+        var interactive = !context.IsRealHierarchyPosition;
         var list = new List<ScoredCandidate>();
         foreach (var item in found.Objs("items").Take(10))
         {
             if (item.Long("id") is not { } id) continue;
             var title = item.Str("name") ?? "";
             var score = Score(term, title);
-            list.Add(new ScoredCandidate(new MediaMetadata
+            if (!interactive && score < 100) continue;
+
+            var meta = new MediaMetadata
             {
                 ExternalId = SteamMapper.ExternalId(id.ToString()), Source = "steam", Title = title,
                 PosterUrl = SteamMapper.PosterUrl(id.ToString()), SourceUrl = SteamMapper.StoreUrl(id.ToString()),
-            }, score, score == 100 ? "exact title" : "similar title"));
+            };
+
+            // Same title, but when Chronicle knows the year and Steam says another one it is a different game (Prey 2006 and Prey 2017).
+            // The year is in the store record, so it costs one paced call per exact title.
+            if (!interactive && context.Year is { } wantYear)
+            {
+                var d = await SteamApi.AppDetailsAsync(id.ToString(), ct);
+                var year = d is null ? null : SteamMapper.YearOf(d.Value.Obj("release_date")?.Str("date"));
+                if (year is { } y && Math.Abs(y - wantYear) > 1) continue;
+                if (year is not null) meta.Year = year;
+            }
+
+            list.Add(new ScoredCandidate(meta, score, score == 100 ? "exact title" : "similar title"));
         }
         return list.OrderByDescending(c => c.Score).ToList();
     }
