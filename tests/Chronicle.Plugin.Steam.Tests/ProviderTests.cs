@@ -175,6 +175,34 @@ public class ImportProviderTests
     }
 
     [Fact]
+    public void The_account_box_tells_the_owner_exactly_what_to_type_and_what_not_to()
+    {
+        var all = new SteamImportProvider().GetSettingsSchema().Settings;
+        var field = all.Single(s => s.Key == "steam_id");
+        Assert.Contains("17 digits", field.Label);
+        Assert.Contains("NOT your name", field.Label);
+
+        // the callout sits directly above the box it explains
+        var notice = all[all.IndexOf(field) - 1];
+        Assert.Equal(SettingType.Notice, notice.Type);
+        Assert.Contains("NUMBER, not your name", notice.Label);
+        Assert.Contains("/profiles/", notice.Description);
+        Assert.Contains("ADDRESS BAR", notice.Description);
+        Assert.Contains("DO NOT type the name shown at the top of your profile", notice.Description);
+        Assert.Contains("/id/", notice.Description);
+    }
+
+    [Fact]
+    public void The_steps_run_in_the_order_the_owner_does_them()
+    {
+        var keys = new SteamImportProvider().GetSettingsSchema().Settings.Select(s => s.Key).ToList();
+        Assert.True(keys.IndexOf("notice_key") < keys.IndexOf("api_key"));
+        Assert.True(keys.IndexOf("api_key") < keys.IndexOf("notice_id"));
+        Assert.True(keys.IndexOf("notice_id") < keys.IndexOf("steam_id"));
+        Assert.True(keys.IndexOf("steam_id") < keys.IndexOf("notice_public"));
+    }
+
+    [Fact]
     public void One_settings_form_serves_both_halves()
     {
         var a = new SteamImportProvider().GetSettingsSchema().Settings.Select(s => s.Key);
