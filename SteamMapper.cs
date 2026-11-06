@@ -12,6 +12,21 @@ internal static class SteamMapper
     private const string Cdn = "https://cdn.akamai.steamstatic.com/steam/apps";
 
     public static string PosterUrl(string appId) => $"{Cdn}/{appId}/library_600x900.jpg";
+
+    private const string AssetBase = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps";
+    private static readonly Regex SafePath = new("^[A-Za-z0-9_./-]{1,200}$", RegexOptions.Compiled);
+    private static readonly Regex Hex = new("^[0-9a-fA-F]{20,64}$", RegexOptions.Compiled);
+
+    /// <summary>
+    /// The library record's own art: <c>capsule_filename</c> is a path under the app's asset folder (either "library_600x900.jpg" or
+    /// "&lt;hash&gt;/library_capsule.jpg"), not an address. A path with anything odd in it is not turned into an address.
+    /// </summary>
+    public static string? CapsuleUrl(string appId, string? capsuleFilename) =>
+        capsuleFilename is { Length: > 0 } f && SafePath.IsMatch(f) && !f.Contains("..") ? $"{AssetBase}/{appId}/{f.TrimStart('/')}" : null;
+
+    /// <summary>The game's small icon: <c>img_icon_url</c> is a hash, and the icon lives at media.steampowered.com under that hash.</summary>
+    public static string? IconUrl(string appId, string? iconHash) =>
+        iconHash is { Length: > 0 } h && Hex.IsMatch(h) ? $"https://media.steampowered.com/steamcommunity/public/images/apps/{appId}/{h}.jpg" : null;
     public static string HeaderUrl(string appId) => $"{Cdn}/{appId}/header.jpg";
     public static string StoreUrl(string appId) => $"https://store.steampowered.com/app/{appId}/";
 
@@ -39,7 +54,7 @@ internal static class SteamMapper
         return new ImportedLibraryEntry(
             ExternalId(appId), new Dictionary<string, string>(), "game", name, null, "PC", "steam",
             (int?)(g.Long("playtime_forever") ?? 0), last, null, false, false, g.GetRawText(),
-            PosterUrl: PosterUrl(appId), BackdropUrl: HeaderUrl(appId));
+            PosterUrl: CapsuleUrl(appId, g.Str("capsule_filename")) ?? PosterUrl(appId), BackdropUrl: HeaderUrl(appId));
     }
 
     /// <summary>One wishlist entry (appid, priority, date added) with the store's record that gives it a name.</summary>
@@ -59,7 +74,11 @@ internal static class SteamMapper
 
     // ── metadata ─────────────────────────────────────────────────────────────
 
-    public static MediaMetadata Details(string appId, JsonElement d, JsonObject? achievements)
+    /// <param name="exists">
+    /// Says whether a guessed art address exists on Steam's CDN (the hero and the logo exist for some games and not others). Null means "do not
+    /// guess": only addresses Steam itself gave are used.
+    /// </param>
+    public static MediaMetadata Details(string appId, JsonElement d, JsonObject? achievements, Func<string, bool>? exists = null)
     {
         var m = new MediaMetadata
         {
@@ -91,8 +110,19 @@ internal static class SteamMapper
         AddImage(m, d.Str("header_image"), "Header");
         AddImage(m, d.Str("capsule_imagev5") ?? d.Str("capsule_image"), "Capsule");
         AddImage(m, d.Str("background_raw") ?? d.Str("background"), "Background");
-        AddImage(m, $"{Cdn}/{appId}/library_hero.jpg", "Library hero");
-        AddImage(m, $"{Cdn}/{appId}/logo.png", "Logo");
+        // The art the library record points at: the game's icon and its library capsule, which the record only names by a hash or a path.
+        if (SteamHub.LibraryImages.TryGetValue(appId, out var lib))
+        {
+            AddImage(m, lib.Capsule, "Library capsule");
+            AddImage(m, lib.Icon, "Icon");
+        }
+        var hero = $"{Cdn}/{appId}/library_hero.jpg";
+        var logo = $"{Cdn}/{appId}/logo.png";
+        if (exists?.Invoke(hero) == true) AddImage(m, hero, "Library hero");
+        if (exists?.Invoke(logo) == true) { AddImage(m, logo, "Logo"); m.LogoUrl = logo; }
+        // The named slots the item page reads: the wide header is the banner, the small capsule the thumbnail.
+        m.BannerUrl = d.Str("header_image")?.Split('?')[0];
+        m.ThumbUrl  = (d.Str("capsule_imagev5") ?? d.Str("capsule_image"))?.Split('?')[0];
         foreach (var s in d.Objs("screenshots"))
             AddImage(m, s.Str("path_full"), "Screenshot", s.Str("path_thumbnail"));
         foreach (var v in d.Objs("movies"))

@@ -55,7 +55,7 @@ public class ManifestTests
     [Fact]
     public void Every_declared_field_is_a_canonical_field_the_host_resolves()
     {
-        string[] known = ["title", "overview", "year", "poster_url", "backdrop_url", "runtime_minutes", "rating", "genres", "cast", "crew", "tags"];
+        string[] known = ["title", "overview", "year", "poster_url", "backdrop_url", "logo_url", "banner_url", "thumb_url", "runtime_minutes", "rating", "genres", "cast", "crew", "tags"];
         foreach (var f in new SteamMetadataProvider().GetSupportedMediaTypes().Single().SupportedFields) Assert.Contains(f, known);
         // when the host source is next door, check against its real field map too
         var host = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "..", "Chronicle", "src", "Chronicle.Services", "MetadataResolutionService.cs");
@@ -72,12 +72,13 @@ public class ManifestTests
     {
         // The Metadata Assignment page lists a plugin for each field it declares; a declared field nothing fills is a lie on that page.
         var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
-        var m = SteamMapper.Details("1245620", d, null);
+        var m = SteamMapper.Details("1245620", d, null, _ => true);
         var filled = new Dictionary<string, bool>
         {
             ["title"] = !string.IsNullOrEmpty(m.Title), ["overview"] = !string.IsNullOrEmpty(m.Overview), ["year"] = m.Year is not null,
             ["poster_url"] = !string.IsNullOrEmpty(m.PosterUrl), ["backdrop_url"] = !string.IsNullOrEmpty(m.BackdropUrl), ["rating"] = m.Rating is not null,
             ["genres"] = m.Genres.Count > 0, ["tags"] = m.Tags.Count > 0, ["cast"] = m.Cast.Count > 0, ["crew"] = m.Crew.Count > 0,
+            ["logo_url"] = !string.IsNullOrEmpty(m.LogoUrl), ["banner_url"] = !string.IsNullOrEmpty(m.BannerUrl), ["thumb_url"] = !string.IsNullOrEmpty(m.ThumbUrl),
         };
         foreach (var f in new SteamMetadataProvider().GetSupportedMediaTypes().Single().SupportedFields)
             Assert.True(filled[f], f + " is declared but the mapper leaves it empty");

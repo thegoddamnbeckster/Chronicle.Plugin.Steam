@@ -32,7 +32,7 @@ public sealed class SteamMetadataProvider : IMetadataProvider
             CastHeading = "Developers", CastAreActors = false,
             Aliases = ["games", "videogame", "video_game"],
             EnrichOnly = false, DefaultPriority = 20,
-            SupportedFields = ["title", "overview", "year", "poster_url", "backdrop_url", "rating", "genres", "tags", "cast", "crew"],
+            SupportedFields = ["title", "overview", "year", "poster_url", "backdrop_url", "logo_url", "banner_url", "thumb_url", "rating", "genres", "tags", "cast", "crew"],
         },
     ];
 
@@ -121,7 +121,11 @@ public sealed class SteamMetadataProvider : IMetadataProvider
         if (d.Value.Obj("achievements")?.Long("total") is > 0 && SteamHub.Current.HasCredentials)
             ach = await AchievementsAsync(appId, ct);
 
-        return SteamMapper.Details(appId, d.Value, ach);
+        // The hero and the logo exist for some games and not others, so each is asked for before it is offered.
+        var present = new HashSet<string>();
+        foreach (var url in new[] { $"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/library_hero.jpg", $"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/logo.png" })
+            if (await ImageExistsAsync(url, ct)) present.Add(url);
+        return SteamMapper.Details(appId, d.Value, ach, present.Contains);
     }
 
     /// <summary>The owner's progress for one game. Anything missing (private stats, no schema) leaves that part out; a pause or a rejected key is passed up.</summary>
@@ -153,10 +157,23 @@ public sealed class SteamMetadataProvider : IMetadataProvider
     {
         "cdn.akamai.steamstatic.com", "shared.akamai.steamstatic.com", "cdn.cloudflare.steamstatic.com",
         "steamcdn-a.akamaihd.net", "shared.cloudflare.steamstatic.com", "avatars.steamstatic.com", "video.akamai.steamstatic.com",
+        "media.steampowered.com",
     };
 
     private static readonly HttpClient ImageHttp = new(new SocketsHttpHandler { AllowAutoRedirect = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) })
     { Timeout = TimeSpan.FromSeconds(30) };
+
+    /// <summary>Replaceable in tests: does this address exist? A failure to find out counts as "no", so no broken address is offered.</summary>
+    internal static Func<string, CancellationToken, Task<bool>> ImageExistsAsync { get; set; } = async (url, ct) =>
+    {
+        try
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Head, url);
+            using var resp = await ImageHttp.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+            return resp.IsSuccessStatusCode;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException) { return false; }
+    };
 
     public async Task<byte[]> GetImageAsync(string url, CancellationToken ct = default)
     {

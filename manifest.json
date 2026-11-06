@@ -1,7 +1,7 @@
 {
   "plugin_id":   "chronicle.plugin.steam",
   "name":        "Steam",
-  "version":     "1.0.5",
+  "version":     "1.1.0",
   "author":      "Chronicle Contributors",
   "description": "Your Steam library in Chronicle: every game and app you own with hours played and last played, your wishlist, level and badges, plus Steam store metadata (description, genres, categories, developers, publishers, screenshots, trailers, requirements, DLC, ratings) and your achievements for each game. Everything Steam has is kept. Needs a free Steam Web API key and a public profile; works on its own, with no other plugin installed.",
   "min_chronicle_version": "0.7.0",
@@ -29,6 +29,13 @@
       "schedulable":     false,
       "run_confirmation_title": "Import your Steam library?",
       "run_confirmation_message": "This adds every game and app you own to Chronicle. Games already there are not duplicated."
+    },
+    {
+      "task_id":         "resync-all-metadata",
+      "display_name":    "Re-sync All Steam Metadata",
+      "description":     "Fetches the store record, artwork and achievements again for every game, to pick up new art, corrected ids and changes. Slow for a large library (the store allows about 200 requests per 5 minutes); stops at the first rate limit and starts over next time.",
+      "default_cron":    "30 3 * * 0",
+      "default_enabled": false
     },
     {
       "task_id":         "fetch-missing-metadata",

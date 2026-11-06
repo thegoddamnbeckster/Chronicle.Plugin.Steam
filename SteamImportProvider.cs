@@ -61,6 +61,7 @@ public sealed class SteamImportProvider : IImportProvider
             if (g.Long("appid") is not { } id) continue;
             entries.Add(SteamMapper.Owned(g));
             ownedIds.Add(id.ToString());
+            SteamHub.LibraryImages[id.ToString()] = (SteamMapper.IconUrl(id.ToString(), g.Str("img_icon_url")), SteamMapper.CapsuleUrl(id.ToString(), g.Str("capsule_filename")));
         }
 
         entries.AddRange(await WishlistAsync(steamId, ownedIds, ct));

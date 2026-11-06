@@ -64,6 +64,12 @@ internal static class SteamHub
     public static readonly Breaker ApiBreaker = new(() => DateTimeOffset.UtcNow, Random.Shared.NextDouble);
     public static readonly Breaker StoreBreaker = new(() => DateTimeOffset.UtcNow, Random.Shared.NextDouble);
 
+    /// <summary>
+    /// The art references Steam puts in a library record (the game's icon and its library capsule are hashed paths, not addresses), by app id,
+    /// from the last library import. The store half uses them when it builds a game's images, so what the library record points at is shown.
+    /// </summary>
+    public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, (string? Icon, string? Capsule)> LibraryImages = new();
+
     public static Settings Current { get { lock (Gate) return _settings; } }
 
     public static void Configure(IReadOnlyDictionary<string, string>? values)

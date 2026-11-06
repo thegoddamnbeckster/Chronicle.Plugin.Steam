@@ -25,11 +25,15 @@ internal sealed class Net : IDisposable
     public readonly List<string> Requests = new();
     private readonly List<(string Part, Func<string, HttpResponseMessage> Reply)> _routes = new();
     private readonly Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _old;
+    private readonly Func<string, CancellationToken, Task<bool>> _oldExists;
 
     public Net()
     {
         SteamHub.ResetForTests();
         _old = SteamApi.Send;
+        _oldExists = SteamMetadataProvider.ImageExistsAsync;
+        SteamMetadataProvider.ImageExistsAsync = (_, _) => Task.FromResult(false);   // no test touches the network for art
+        SteamHub.LibraryImages.Clear();
         SteamApi.Send = (req, ct) =>
         {
             var url = req.RequestUri!.ToString();
@@ -58,5 +62,5 @@ internal sealed class Net : IDisposable
 
     public int Count(string part) { lock (Requests) return Requests.Count(r => r.Contains(part, StringComparison.OrdinalIgnoreCase)); }
 
-    public void Dispose() { SteamApi.Send = _old; SteamHub.ResetForTests(); }
+    public void Dispose() { SteamApi.Send = _old; SteamMetadataProvider.ImageExistsAsync = _oldExists; SteamHub.LibraryImages.Clear(); SteamHub.ResetForTests(); }
 }

@@ -53,6 +53,17 @@ public class ImportProviderTests
     }
 
     [Fact]
+    public async Task The_library_import_remembers_the_art_each_record_points_at()
+    {
+        using var net = Library(new Net().Configure()).On("appdetails", "{}", HttpStatusCode.TooManyRequests);
+        await new SteamImportProvider().GetLibraryAsync();
+
+        var cs = SteamHub.LibraryImages["10"];
+        Assert.EndsWith("/apps/10/6b0312cda02f5f777efa2f3318c307ff9acafbb5.jpg", cs.Icon);
+        Assert.EndsWith("/store_item_assets/steam/apps/10/library_600x900.jpg", cs.Capsule);
+    }
+
+    [Fact]
     public async Task A_wishlisted_game_that_is_already_owned_is_not_listed_twice()
     {
         using var net = Library(new Net().Configure());
@@ -399,6 +410,7 @@ public class MetadataProviderTests
     [Theory]
     [InlineData("https://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", true)]
     [InlineData("https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/library_600x900.jpg", true)]
+    [InlineData("https://media.steampowered.com/steamcommunity/public/images/apps/10/6b0312cda02f5f777efa2f3318c307ff9acafbb5.jpg", true)]
     [InlineData("http://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", false)]
     [InlineData("https://evil.example.com/header.jpg", false)]
     [InlineData("https://cdn.akamai.steamstatic.com.evil.example.com/x.jpg", false)]

@@ -55,7 +55,8 @@ public class MapperTests
     public void Artwork_urls_are_steams_own_cdn_by_app_id()
     {
         var e = SteamMapper.Owned(Game(10));
-        Assert.Equal("https://cdn.akamai.steamstatic.com/steam/apps/10/library_600x900.jpg", e.PosterUrl);
+        // the record's own capsule path ("library_600x900.jpg" for this game) under the app's asset folder
+        Assert.Equal("https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/library_600x900.jpg", e.PosterUrl);
         Assert.Equal("https://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", e.BackdropUrl);
     }
 
@@ -95,7 +96,7 @@ public class MapperTests
     public void The_store_record_fills_every_field_the_plugin_declares()
     {
         var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
-        var m = SteamMapper.Details("1245620", d, null);
+        var m = SteamMapper.Details("1245620", d, null, _ => true);
         Assert.Equal("ELDEN RING", m.Title);
         Assert.Equal(2022, m.Year);
         Assert.False(string.IsNullOrWhiteSpace(m.Overview));
@@ -153,5 +154,74 @@ public class MapperTests
         Assert.Equal(13, raw.RootElement.GetProperty("level").GetProperty("response").GetProperty("player_level").GetInt32());
         Assert.True(raw.RootElement.GetProperty("badges").GetProperty("response").GetProperty("badges").GetArrayLength() > 0);
         Assert.True(raw.RootElement.TryGetProperty("recentlyPlayed", out _));
+    }
+
+    [Theory]
+    [InlineData("library_600x900.jpg", "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/9/library_600x900.jpg")]
+    [InlineData("e33d26c3175e3f590a0153fdcf0f4863f6c84288/library_600x900.jpg", "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/9/e33d26c3175e3f590a0153fdcf0f4863f6c84288/library_600x900.jpg")]
+    [InlineData("a79b4d13ce2b1e1379116085b4f97b45c14548ab/library_capsule.jpg", "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/9/a79b4d13ce2b1e1379116085b4f97b45c14548ab/library_capsule.jpg")]
+    [InlineData("../../evil.jpg", null)]
+    [InlineData("a b.jpg", null)]
+    [InlineData("https://evil.example.com/x.jpg", null)]
+    [InlineData("", null)]
+    [InlineData(null, null)]
+    public void A_capsule_path_becomes_an_address_only_when_it_is_a_plain_path(string? path, string? expected) =>
+        Assert.Equal(expected, SteamMapper.CapsuleUrl("9", path));
+
+    [Theory]
+    [InlineData("c284e73b6f3321864805d66f99924a0da9f0b219", "https://media.steampowered.com/steamcommunity/public/images/apps/9/c284e73b6f3321864805d66f99924a0da9f0b219.jpg")]
+    [InlineData("not a hash", null)]
+    [InlineData("../x", null)]
+    [InlineData("", null)]
+    [InlineData(null, null)]
+    public void An_icon_hash_becomes_the_icon_address_and_nothing_else_does(string? hash, string? expected) =>
+        Assert.Equal(expected, SteamMapper.IconUrl("9", hash));
+
+    [Fact]
+    public void The_poster_is_the_record_own_hashed_capsule_when_it_has_one()
+    {
+        var g = Fx.Parse("{\"appid\":1808500,\"name\":\"ARC Raiders\",\"capsule_filename\":\"e33d26c3175e3f590a0153fdcf0f4863f6c84288/library_600x900.jpg\"}");
+        Assert.Equal("https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1808500/e33d26c3175e3f590a0153fdcf0f4863f6c84288/library_600x900.jpg", SteamMapper.Owned(g).PosterUrl);
+    }
+
+    [Fact]
+    public void The_hero_and_logo_are_offered_only_when_they_exist_never_guessed()
+    {
+        var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
+        var without = SteamMapper.Details("1245620", d, null);
+        Assert.DoesNotContain(without.AdditionalImages, i => i.Type is "Logo" or "Library hero");
+        Assert.Null(without.LogoUrl);
+
+        var heroOnly = SteamMapper.Details("1245620", d, null, u => u.EndsWith("library_hero.jpg"));
+        Assert.Contains(heroOnly.AdditionalImages, i => i.Type == "Library hero");
+        Assert.DoesNotContain(heroOnly.AdditionalImages, i => i.Type == "Logo");
+        Assert.Null(heroOnly.LogoUrl);
+
+        var both = SteamMapper.Details("1245620", d, null, _ => true);
+        Assert.Equal("https://cdn.akamai.steamstatic.com/steam/apps/1245620/logo.png", both.LogoUrl);
+    }
+
+    [Fact]
+    public void The_named_art_slots_are_filled_from_the_store_record()
+    {
+        var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
+        var m = SteamMapper.Details("1245620", d, null);
+        Assert.False(string.IsNullOrEmpty(m.BannerUrl));   // the wide header
+        Assert.False(string.IsNullOrEmpty(m.ThumbUrl));    // the capsule
+        Assert.DoesNotContain("?", m.BannerUrl!);
+    }
+
+    [Fact]
+    public void What_the_library_record_points_at_is_shown_as_images_of_the_game()
+    {
+        var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
+        SteamHub.LibraryImages["1245620"] = ("https://media.steampowered.com/steamcommunity/public/images/apps/1245620/aa.jpg", "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/bb/library_capsule.jpg");
+        try
+        {
+            var m = SteamMapper.Details("1245620", d, null);
+            Assert.Contains(m.AdditionalImages, i => i.Type == "Icon" && i.Url.EndsWith("/aa.jpg"));
+            Assert.Contains(m.AdditionalImages, i => i.Type == "Library capsule" && i.Url.EndsWith("/bb/library_capsule.jpg"));
+        }
+        finally { SteamHub.LibraryImages.Clear(); }
     }
 }
