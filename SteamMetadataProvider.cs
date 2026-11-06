@@ -161,7 +161,7 @@ public sealed class SteamMetadataProvider : IMetadataProvider
     };
 
     private static readonly HttpClient ImageHttp = new(new SocketsHttpHandler { AllowAutoRedirect = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) })
-    { Timeout = TimeSpan.FromSeconds(30) };
+    { Timeout = TimeSpan.FromSeconds(30), DefaultRequestHeaders = { { "User-Agent", SteamHub.UserAgent } } };
 
     /// <summary>Replaceable in tests: does this address exist? A failure to find out counts as "no", so no broken address is offered.</summary>
     internal static Func<string, CancellationToken, Task<bool>> ImageExistsAsync { get; set; } = async (url, ct) =>

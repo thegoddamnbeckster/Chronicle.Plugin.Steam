@@ -12,10 +12,17 @@ internal static class SteamApi
     private const string WebApi = "https://api.steampowered.com";
     private const string Store = "https://store.steampowered.com";
 
-    private static readonly HttpClient Http = new(new SocketsHttpHandler { AllowAutoRedirect = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) })
+    private static readonly HttpClient Http = CreateHttp();
+
+    private static HttpClient CreateHttp()
     {
-        Timeout = TimeSpan.FromSeconds(30),
-    };
+        var http = new HttpClient(new SocketsHttpHandler { AllowAutoRedirect = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) })
+        {
+            Timeout = TimeSpan.FromSeconds(30),
+        };
+        http.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", SteamHub.UserAgent);
+        return http;
+    }
 
     /// <summary>Replaceable in tests: send a request, get a response.</summary>
     internal static Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> Send { get; set; } =

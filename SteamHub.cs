@@ -53,6 +53,10 @@ internal static class SteamHub
 {
     public const string PluginId = "chronicle.plugin.steam";
 
+    /// <summary>Named so Valve can tell this client from an anonymous one: the plugin and its real version, nothing about the owner.</summary>
+    public static readonly string UserAgent = "Chronicle-Steam/" +
+        (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(SteamHub).Assembly)?.InformationalVersion.Split('+')[0] ?? "1.0.0");
+
     private static readonly object Gate = new();
     private static Settings _settings = Settings.Default;
     private static string? _resolvedId;

@@ -57,3 +57,12 @@ public class NamesTests
         Assert.Contains("Sid Meier's Civilization 6", m.AlternateNames);
     }
 }
+
+public class IdentityTests
+{
+    [Fact]
+    public void The_user_agent_names_the_plugin_and_its_real_version_and_nothing_else()
+    {
+        Assert.Matches(@"^Chronicle-Steam/\d+\.\d+\.\d+$", SteamHub.UserAgent);
+    }
+}
