@@ -54,7 +54,8 @@ internal static class SteamMapper
         return new ImportedLibraryEntry(
             ExternalId(appId), new Dictionary<string, string>(), "game", name, null, "PC", "steam",
             (int?)(g.Long("playtime_forever") ?? 0), last, null, false, false, g.GetRawText(),
-            PosterUrl: CapsuleUrl(appId, g.Str("capsule_filename")) ?? PosterUrl(appId), BackdropUrl: HeaderUrl(appId));
+            PosterUrl: CapsuleUrl(appId, g.Str("capsule_filename")) ?? PosterUrl(appId), BackdropUrl: HeaderUrl(appId),
+            AlternateNames: SteamNames.Alternates(name));
     }
 
     /// <summary>One wishlist entry (appid, priority, date added) with the store's record that gives it a name.</summary>
@@ -69,7 +70,8 @@ internal static class SteamMapper
             ExternalId(appId), new Dictionary<string, string>(), "game", details.Str("name") ?? $"Steam app {appId}",
             YearOf(details.Obj("release_date")?.Str("date")), "PC", "steam", null, null, added, false, true, raw.ToJsonString(),
             Tags: tags.Count > 0 ? tags : null, PosterUrl: PosterUrl(appId), BackdropUrl: HeaderUrl(appId),
-            Overview: details.Str("short_description"));
+            Overview: details.Str("short_description"),
+            AlternateNames: SteamNames.Alternates(details.Str("name") ?? ""));
     }
 
     // ── metadata ─────────────────────────────────────────────────────────────
@@ -92,6 +94,7 @@ internal static class SteamMapper
             BackdropUrl = FirstScreenshot(d) ?? d.Str("background_raw") ?? d.Str("header_image"),
         };
 
+        m.AlternateNames = SteamNames.Alternates(m.Title);
         m.Genres = d.Names("genres", "description");
         var tags = d.Names("categories", "description");
         if (d.Str("type") is { Length: > 0 } ty && ty != "game") tags.Insert(0, ty);
