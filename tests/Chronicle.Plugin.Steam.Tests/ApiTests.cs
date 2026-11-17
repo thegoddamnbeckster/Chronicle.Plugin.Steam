@@ -75,6 +75,7 @@ public class ApiTests
         // the cool-down answers the next call at once, with the same pause, without asking Steam again
         var again = await Assert.ThrowsAsync<HttpRequestException>(() => SteamApi.AppDetailsAsync("10", default));
         Assert.Equal(HttpStatusCode.TooManyRequests, again.StatusCode);
+        Assert.IsType<TimeSpan>(again.Data["RetryAfter"]);   // it says how much of the cool-down is left, so Chronicle's queue holds the item that long
         Assert.Equal(1, net.Count("appdetails"));
         // and the web API is not held up by the store's trouble
         Assert.False(SteamHub.ApiBreaker.IsOpen);

@@ -180,7 +180,7 @@ internal static class SteamApi
                 // The store answers 403 or 429 when it is asked too fast. A pause: no retry is counted against the item.
                 var ra = resp.Headers.RetryAfter?.Delta;
                 p.Breaker.Trip(true, $"{p.Name} said slow down", ra);
-                throw Fail.Pause($"{p.Name} said slow down.", HttpStatusCode.TooManyRequests, "rate");
+                throw Fail.Pause($"{p.Name} said slow down.", HttpStatusCode.TooManyRequests, "rate", retryAfter: ra);
             }
 
             if (p.Keyed && status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden && !await IsJsonBodyAsync(resp, ct))
