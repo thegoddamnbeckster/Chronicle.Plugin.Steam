@@ -32,7 +32,7 @@ public sealed class SteamMetadataProvider : IMetadataProvider
             CastHeading = "Developers", CastAreActors = false,
             Aliases = ["games", "videogame", "video_game"],
             EnrichOnly = false, DefaultPriority = 20,
-            SupportedFields = ["title", "overview", "year", "poster_url", "backdrop_url", "logo_url", "banner_url", "thumb_url", "rating", "genres", "tags", "cast", "crew"],
+            SupportedFields = ["title", "overview", "year", "poster_url", "backdrop_url", "logo_url", "banner_url", "thumb_url", "genres", "tags", "cast", "crew"],
         },
     ];
 

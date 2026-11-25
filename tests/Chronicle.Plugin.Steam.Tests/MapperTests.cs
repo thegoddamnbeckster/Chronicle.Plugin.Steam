@@ -109,7 +109,28 @@ public class MapperTests
         Assert.Contains(m.AdditionalImages, i => i.Type == "Screenshot");
         Assert.All(m.AdditionalImages, i => Assert.StartsWith("https://", i.Url));
         Assert.Equal(m.AdditionalImages.Count, m.AdditionalImages.Select(i => i.Url).Distinct().Count());
-        Assert.NotNull(m.Rating);                 // metacritic / 10
+        Assert.Null(m.Rating);                    // Steam has no score of its own; the relayed Metacritic score is a contract entry
+    }
+
+    [Fact]
+    public void The_metacritic_score_is_reported_as_metacritic_critics_out_of_100()
+    {
+        var d = Fx.Json("appdetails-1245620.json").GetProperty("1245620").GetProperty("data");
+        var m = SteamMapper.Details("1245620", d, null);
+        var r = m.ExtendedData!.Value.GetProperty("ratings").EnumerateArray().Single();
+        Assert.Equal("metacritic", r.GetProperty("key").GetString());
+        Assert.Equal("critics", r.GetProperty("variant").GetString());
+        Assert.Equal(94, r.GetProperty("value").GetDouble());
+        Assert.Equal(100, r.GetProperty("scale").GetDouble());
+        Assert.Equal("https://www.metacritic.com/game/pc/elden-ring", r.GetProperty("url").GetString()); // tracking query dropped
+    }
+
+    [Fact]
+    public void A_game_with_no_metacritic_score_reports_none()
+    {
+        using var doc = JsonDocument.Parse("""{"type":"game","name":"Indie","steam_appid":1}""");
+        var m = SteamMapper.Details("1", doc.RootElement, null);
+        Assert.False(m.ExtendedData!.Value.TryGetProperty("ratings", out _));
     }
 
     [Fact]

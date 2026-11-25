@@ -76,7 +76,7 @@ public class ManifestTests
         var filled = new Dictionary<string, bool>
         {
             ["title"] = !string.IsNullOrEmpty(m.Title), ["overview"] = !string.IsNullOrEmpty(m.Overview), ["year"] = m.Year is not null,
-            ["poster_url"] = !string.IsNullOrEmpty(m.PosterUrl), ["backdrop_url"] = !string.IsNullOrEmpty(m.BackdropUrl), ["rating"] = m.Rating is not null,
+            ["poster_url"] = !string.IsNullOrEmpty(m.PosterUrl), ["backdrop_url"] = !string.IsNullOrEmpty(m.BackdropUrl),
             ["genres"] = m.Genres.Count > 0, ["tags"] = m.Tags.Count > 0, ["cast"] = m.Cast.Count > 0, ["crew"] = m.Crew.Count > 0,
             ["logo_url"] = !string.IsNullOrEmpty(m.LogoUrl), ["banner_url"] = !string.IsNullOrEmpty(m.BannerUrl), ["thumb_url"] = !string.IsNullOrEmpty(m.ThumbUrl),
         };

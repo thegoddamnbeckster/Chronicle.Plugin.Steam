@@ -105,7 +105,16 @@ internal static class SteamMapper
         if (d.Bool("is_free") == true) tags.Add("Free to play");
         m.Tags = tags.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
 
-        if (d.Obj("metacritic")?.Long("score") is { } mc and > 0) m.Rating = Math.Round(mc / 10.0, 1);
+        // Steam has no score of its own; the store relays Metacritic's critic score. It is reported as that (out of 100, critics), not as
+        // Steam's rating, so the item page names it correctly and does not repeat it when another plugin relays the same number.
+        JsonArray? ratings = null;
+        if (d.Obj("metacritic") is { } meta && meta.Long("score") is { } mc and > 0 and <= 100)
+        {
+            var entry = new JsonObject { ["key"] = "metacritic", ["variant"] = "critics", ["value"] = mc, ["scale"] = 100 };
+            if (meta.Str("url") is { Length: > 0 } mu && Uri.TryCreate(mu, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps)
+                entry["url"] = uri.GetLeftPart(UriPartial.Path); // drops the tracking query Steam appends
+            ratings = [entry];
+        }
 
         foreach (var dev in d.Strs("developers")) m.Cast.Add(new CastMember(dev, "Developer"));
         foreach (var pub in d.Strs("publishers")) m.Crew.Add(new CrewMember(pub, "Publisher"));
@@ -134,7 +143,9 @@ internal static class SteamMapper
         // The whole store record, and the achievements, under one key: the item page's plugin box shows it, nothing is dropped.
         var ext = new JsonObject { ["appdetails"] = JsonNode.Parse(d.GetRawText()) };
         if (achievements is not null) ext["achievements"] = achievements;
-        m.ExtendedData = JsonSerializer.SerializeToElement(new JsonObject { ["steam"] = ext });
+        var root = new JsonObject { ["steam"] = ext };
+        if (ratings is not null) root["ratings"] = ratings;
+        m.ExtendedData = JsonSerializer.SerializeToElement(root);
         return m;
     }
 
